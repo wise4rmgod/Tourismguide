@@ -12,8 +12,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.widget.Toast
 import com.example.multikskills.tourismguide.Adapter.PlacesAdapter
 import com.google.android.gms.location.places.*
+import kotlinx.android.synthetic.main.activity_banks.*
 
 
 class Banks : AppCompatActivity() {
@@ -21,7 +23,7 @@ class Banks : AppCompatActivity() {
     private val LOC_REQ_CODE = 1
 
     lateinit var geoDataClient: GeoDataClient
-    lateinit var placeDetectionClient: PlaceDetectionClient
+    private var placeDetectionClient: PlaceDetectionClient?=null
     lateinit var recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,22 +54,35 @@ class Banks : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getCurrentPlaceData() {
+
+        var filters = ArrayList<String>()
+        filters.add(Place.TYPE_STREET_ADDRESS.toString())
+        var placeFilter = PlaceFilter(true, filters)
+
         val placeResult = placeDetectionClient!!.getCurrentPlace(null)
         placeResult.addOnCompleteListener { task ->
           //  Log.d(FragmentActivity.TAG, "current location places info")
-          //  var filters = ArrayList<String>()
-           //    filters.add(Place.TYPE_BANK.toString())
-           //   var placeFilter = PlaceFilter(false, filters)
+
             val placesList = ArrayList<Place>()
             val likelyPlaces = task.result
+            if (likelyPlaces == null){
+                Toast.makeText(this,"Poor network",Toast.LENGTH_SHORT).show()
+
+            }
+
+            else{
+
             for (placeLikelihood in likelyPlaces) {
                 placesList.add(placeLikelihood.place.freeze())
+
             }
+                avi.hide()
             likelyPlaces.release()
 
             val recyclerViewAdapter = PlacesAdapter(placesList,applicationContext
                      )
             recyclerView.adapter = recyclerViewAdapter
+        }
         }
     }
 

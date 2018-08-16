@@ -1,7 +1,10 @@
 package com.example.multikskills.tourismguide.Adapter
 
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import com.google.android.gms.location.places.Place
 import android.widget.RatingBar
 import android.widget.TextView
@@ -11,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.multikskills.tourismguide.R
+import com.example.multikskills.tourismguide.ViewDetails
 
 class PlacesAdapter (private val placesList: List<Place>, private val context: Context) : RecyclerView.Adapter<PlacesAdapter.ViewHolder>() {
     override fun getItemCount(): Int {
@@ -29,7 +33,7 @@ class PlacesAdapter (private val placesList: List<Place>, private val context: C
         val itemPos = position
         val place = placesList[position]
         holder.name.text = place.name
-        Toast.makeText(context,place.name,Toast.LENGTH_SHORT).show()
+
       /**  holder.address.text = place.address
         holder.phone.text = place.phoneNumber
         if (place.websiteUri != null) {
@@ -43,7 +47,22 @@ class PlacesAdapter (private val placesList: List<Place>, private val context: C
         }  **/
 
         holder.itemView.setOnClickListener {
-            Toast.makeText(context,"its working",Toast.LENGTH_SHORT).show()
+           // Toast.makeText(context,""+ place.latLng,Toast.LENGTH_SHORT).show()
+            val i = Intent(context,ViewDetails::class.java)
+            i.putExtra("id",place.id)
+            i.putExtra("lat",place.latLng.latitude)
+            i.putExtra("address",place.address)
+            i.putExtra("phone",place.phoneNumber)
+            i.putExtra("viewport",place.viewport)
+            i.putExtra("web",place.websiteUri)
+            i.putExtra("rating",place.rating)
+            i.putExtra("attribution",place.attributions)
+            i.putExtra("pricelevel",place.priceLevel)
+            i.putExtra("locale",place.locale.displayVariant)
+            i.putExtra("name",place.name)
+            i.putExtra("lng",place.latLng.longitude)
+            context.startActivity(i)
+
         }
 
       /**  holder.viewOnMap.setOnClickListener(object : View.OnClickListener() {
